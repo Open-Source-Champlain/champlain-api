@@ -1,0 +1,25 @@
+name: "Build and test API"
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**.ts"
+
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+    name: "Build & test API"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Build API
+        run: bun run build && rm -rf out/
+      - name: Run server and tests
+        run: bun src/index.ts & sleep 5 && bun test
+      - name: Kill processes
+        run: pkill -f bun
